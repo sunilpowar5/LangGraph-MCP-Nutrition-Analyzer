@@ -18,7 +18,14 @@ mcp = FastMCP(
     stateless_http=True
 )
 
-@mcp.tool()
+app = mcp.get_app()
+
+@app.get("/")
+def read_root():
+    return {"status": "Nutrition Tool Server is running"}
+
+
+@mcp.tool(description="fetch data via nutritionix api")
 def nutrition_fetch(query:str)->dict:
     headers = {
         "x-app-id": NUTRITIONIX_APP_ID,

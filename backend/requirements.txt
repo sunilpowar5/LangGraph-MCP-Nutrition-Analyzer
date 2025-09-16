@@ -1,0 +1,6 @@
+fastmcp
+uvicorn
+python-dotenv
+requestes
+wikipedia
+langchain_community

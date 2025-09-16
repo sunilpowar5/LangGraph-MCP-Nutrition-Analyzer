@@ -1,0 +1,7 @@
+streamlit
+langgraph
+langchain-google-genai
+google-genai
+pillow
+langchain-mcp-adapters
+nest_asyncio

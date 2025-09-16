@@ -34,7 +34,7 @@ async def get_tools():
     try:
         client = MultiServerMCPClient({
             "nutrition": {
-                "url": "http://localhost:8000/mcp",
+                "url": "https://my-nutrition-server.onrender.com/mcp",
                 "transport": "streamable_http"
             }
         })

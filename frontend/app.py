@@ -32,6 +32,9 @@ if "nutrition_result" not in st.session_state:
 
 # ------------------ Image Upload Logic ------------------
 uploaded_file = st.file_uploader("Upload a food image", type=["jpg", "jpeg", "png"])
+  # MOVED LOGIC: Always display the image if it exists in the session state.
+if st.session_state.uploaded_image is not None:
+    st.image(st.session_state.uploaded_image, caption="Uploaded Food Image", width="content")
 
 if uploaded_file is not None:
     # Read the file bytes to check if it's a new image
@@ -48,8 +51,7 @@ if uploaded_file is not None:
         st.session_state.chat_history = []
 
      # Show uploaded image
-        if st.session_state.uploaded_image is not None:
-            st.image(st.session_state.uploaded_image, caption="Uploaded Food Image", width="content")
+        
         # Run the asynchronous graph for image analysis
         with st.spinner("Analyzing..."):
 

@@ -1,32 +1,22 @@
 import os
 import requests
-from mcp.server.fastmcp import FastMCP
-
+from fastapi import FastAPI
+from fastmcp import FastMCP
 from langchain_community.utilities import WikipediaAPIWrapper
-from langchain_community.tools import WikipediaQueryRun
 
-from dotenv import load_dotenv
-load_dotenv(override=True)
-
-NUTRITIONIX_APP_ID = os.getenv("NUTRITIONIX_APP_ID")
-NUTRITIONIX_API_KEY = os.getenv("NUTRITIONIX_API_KEY")
-
-mcp = FastMCP(
-    name="Nutrition Info",
-    host="0.0.0.0",
-    port=8000,
-    stateless_http=True
-)
-
-app = mcp.get_app()
+app = FastAPI()
+mcp = FastMCP(name="Nutrition Info")
+app.mount("/mcp", mcp)
 
 @app.get("/")
 def read_root():
     return {"status": "Nutrition Tool Server is running"}
 
+NUTRITIONIX_APP_ID = os.getenv("NUTRITIONIX_APP_ID")
+NUTRITIONIX_API_KEY = os.getenv("NUTRITIONIX_API_KEY")
 
-@mcp.tool(description="fetch data via nutritionix api")
-def nutrition_fetch(query:str)->dict:
+@mcp.tool()
+def nutrition_fetch(query: str) -> dict:
     headers = {
         "x-app-id": NUTRITIONIX_APP_ID,
         "x-app-key": NUTRITIONIX_API_KEY,
@@ -43,10 +33,10 @@ def nutrition_fetch(query:str)->dict:
         return {"error": resp.text}
 
 @mcp.tool(description="Fetch data via wikipedia api")
-def wiki_search(query:str)->str:
+def wiki_search(query: str) -> str:
     wiki_wrapper = WikipediaAPIWrapper()
-    wiki_tool = WikipediaQueryRun(api_wrapper=wiki_wrapper)
-    return wiki_tool.run(query)
+    return wiki_wrapper.run(query)
 
-if __name__=="__main__":
-    mcp.run(transport="streamable-http")
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -1,6 +1,6 @@
 fastmcp
 uvicorn
 python-dotenv
-requestes
+requests
 wikipedia
 langchain_community

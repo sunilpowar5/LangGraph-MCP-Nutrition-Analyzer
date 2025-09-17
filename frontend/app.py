@@ -1,20 +1,18 @@
 import streamlit as st
 from PIL import Image
 import asyncio
-import nest_asyncio  # Must be imported
+import nest_asyncio 
 import uuid
 from client import calorie_graph
 
-# This is the crucial patch that allows asyncio.run() to work inside Streamlit.
-# It should be at the very top of your entry-point script.
+
 nest_asyncio.apply()
 
-# ------------------ Streamlit Page Setup ------------------
+# Streamlit Page Setup 
 st.set_page_config(page_title="Food Calories & Proteins Analyzer")
 st.title("Food Calories and Proteins Analyzer")
 
-# ------------------ Session State Initialization ------------------
-# This ensures that variables persist between user interactions.
+# Session State Initialization 
 if "thread_id" not in st.session_state:
     st.session_state.thread_id = str(uuid.uuid4())
 if "uploaded_image" not in st.session_state:
@@ -30,28 +28,25 @@ if "analysis_done" not in st.session_state:
 if "nutrition_result" not in st.session_state:
     st.session_state.nutrition_result = None
 
-# ------------------ Image Upload Logic ------------------
+# Image Upload
 uploaded_file = st.file_uploader("Upload a food image", type=["jpg", "jpeg", "png"])
-  # MOVED LOGIC: Always display the image if it exists in the session state.
+
+# Show uploaded imgae
 if st.session_state.uploaded_image is not None:
     st.image(st.session_state.uploaded_image, caption="Uploaded Food Image", width="content")
 
 if uploaded_file is not None:
-    # Read the file bytes to check if it's a new image
     uploaded_file.seek(0)
     new_image_bytes = uploaded_file.read()
 
     # Process only if a new image has been uploaded
     if st.session_state.image_bytes != new_image_bytes:
-        # Reset state for the new analysis
         st.session_state.uploaded_image = Image.open(uploaded_file)
         st.session_state.image_bytes = new_image_bytes
         st.session_state.mime = uploaded_file.type
         st.session_state.analysis_done = False
         st.session_state.chat_history = []
 
-     # Show uploaded image
-        
         # Run the asynchronous graph for image analysis
         with st.spinner("Analyzing..."):
 
@@ -68,10 +63,11 @@ if uploaded_file is not None:
         st.session_state.nutrition_result = initial_result
         st.session_state.chat_history.append(("system", "Nutrition Analysis"))
         st.session_state.chat_history.append(("assistant", initial_result))
+
         # Rerun to update the display immediately
         st.rerun()
 
-# ------------------ Chat History Display ------------------
+# Chat History Display 
 for role, msg in st.session_state.chat_history:
     if role == "user":
         st.chat_message("user").markdown(msg)
@@ -80,10 +76,10 @@ for role, msg in st.session_state.chat_history:
     elif role == "system":
         st.markdown(f"### {msg}")
 
-# ------------------ Follow-up Question Logic ------------------
+# Follow-up Question Logic 
 if st.session_state.analysis_done:
     if user_question := st.chat_input("Ask a follow-up question"):
-        # Add user's question to chat history and display it
+
         st.session_state.chat_history.append(("user", user_question))
         st.chat_message("user").markdown(user_question)
 
@@ -101,7 +97,7 @@ if st.session_state.analysis_done:
         st.session_state.chat_history.append(("assistant", followup_text))
         st.rerun() # Rerun to show the new assistant message
 
-# ------------------ Reset Session Button ------------------
+# Reset Session Button
 if st.button("Start New Session"):
     # Clear all session state variables
     st.session_state.clear()

@@ -1,0 +1,14 @@
+fastmcp
+fastapi 
+uvicorn
+python-dotenv
+requests
+wikipedia
+langchain_community
+streamlit
+langgraph
+langchain-google-genai
+google-genai
+pillow
+langchain-mcp-adapters
+nest_asyncio

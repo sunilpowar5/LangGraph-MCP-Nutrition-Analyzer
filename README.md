@@ -100,7 +100,7 @@ uvicorn backend.server:app --host 0.0.0.0 --port 8000
 
 ---
 
-## 🎮 Usage
+## Usage
 
 Upload a food image (jpeg/jpg/png).
 The system detects food items → Nutritionix fetches calories & protein info.

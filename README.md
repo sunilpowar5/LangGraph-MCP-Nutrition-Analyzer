@@ -25,6 +25,7 @@ Why is it beneficial?
 📈 Helps users make data-driven health decisions
 
 📂 Project Structure
+|── .devcontainer
 │── backend/               # Backend API & services
 │   ├── server.py          # API server
 │   └── requirements.txt   # Backend dependencies
@@ -38,6 +39,7 @@ Why is it beneficial?
 │── pyproject.toml         # Project metadata
 │── requirements.txt       # Root dependencies
 │── README.md              # Documentation
+
 
 🚀 Vision
 
